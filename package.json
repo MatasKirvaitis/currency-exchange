@@ -4,6 +4,7 @@
   "description": "currency-exchange",
   "main": "index.js",
   "scripts": {
+    "install": "cd server && npm install && cd.. && cd client && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/MatasKirvaitis/currency-exchange/issues"
   },
-  "homepage": "https://github.com/MatasKirvaitis/currency-exchange#readme"
+  "homepage": "https://github.com/MatasKirvaitis/currency-exchange#readme",
+  "dependencies": {
+    "@types/jest": "^26.0.10"
+  }
 }

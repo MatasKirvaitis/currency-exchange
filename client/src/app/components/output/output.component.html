@@ -1,0 +1,12 @@
+<div
+  element.style.visibility="hidden"
+  *ngIf="calculation.result != 0"
+  class="output"
+>
+  <mat-card>
+    <mat-card-content>
+      {{ calculation.amount }} {{ calculation.fromCurrency }} =
+      {{ calculation.result }} {{ calculation.toCurrency }}
+    </mat-card-content>
+  </mat-card>
+</div>

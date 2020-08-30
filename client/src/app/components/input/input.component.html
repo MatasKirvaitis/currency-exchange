@@ -1,0 +1,66 @@
+<div class="flex-center">
+  <mat-grid-list cols="1" rowHeight="100px">
+    <mat-grid-tile colspan="1">
+      <div class="amount-input">
+        <mat-form-field class="input-form-field">
+          <mat-label>Input currency</mat-label>
+          <input matInput type="number" [(ngModel)]="amount" />
+          <button
+            mat-button
+            *ngIf="amount"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="amount = ''"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1">
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>From currency</mat-label>
+          <mat-select [(ngModel)]="selectedFromCurrency" required>
+            <mat-option
+              *ngFor="let currency of fromCurrencies"
+              [value]="currency.value"
+            >
+              {{ currency.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1">
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>To currency</mat-label>
+          <mat-select [(value)]="selectedToCurrency" required>
+            <mat-option
+              *ngFor="let currency of toCurrencies"
+              [value]="currency.value"
+            >
+              {{ currency.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1">
+      <div class="button-input">
+        <button (click)="onClick()" mat-raised-button>Convert</button>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1">
+      <app-output [calculation]="calculation"></app-output>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+<div class="overlay" *ngIf="loading">
+  <div class="center">
+    <mat-progress-spinner color="primary" mode="indeterminate">
+    </mat-progress-spinner>
+  </div>
+</div>
