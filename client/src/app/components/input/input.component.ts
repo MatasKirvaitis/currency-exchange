@@ -23,10 +23,10 @@ export class InputComponent implements OnInit {
   result: number;
   calculation = {
     amount: 0,
-    fromCurrency: "none",
-    toCurrency: "none",
-    result: 0
-  }
+    fromCurrency: 'none',
+    toCurrency: 'none',
+    result: 0,
+  };
   selectedFromCurrency: number;
   selectedToCurrency: number;
 
@@ -36,8 +36,9 @@ export class InputComponent implements OnInit {
 
   constructor(
     private fetchingService: FetchingService,
-    private cookieService: CookieService) { }
-  
+    private cookieService: CookieService
+  ) {}
+
   ngOnInit(): void {
     this.updateCurrencies();
     this.populateCurrencies();
@@ -50,18 +51,21 @@ export class InputComponent implements OnInit {
   }
 
   calculate() {
-    if(this.amount == 0)
-      this.amount = 1;
+    if (this.amount == 0) this.amount = 1;
     this.result =
       (this.amount * this.selectedToCurrency) / this.selectedFromCurrency;
-    const from = R.find(R.propEq('value', this.selectedFromCurrency))(this.fromCurrencies);
-    const to = R.find(R.propEq('value', this.selectedToCurrency))(this.toCurrencies);
+    const from = R.find(R.propEq('value', this.selectedFromCurrency))(
+      this.fromCurrencies
+    );
+    const to = R.find(R.propEq('value', this.selectedToCurrency))(
+      this.toCurrencies
+    );
     this.calculation = {
       amount: this.amount,
       fromCurrency: from.symbol,
       toCurrency: to.symbol,
-      result: Math.round(this.result * 100000) / 100000
-    }
+      result: Math.round(this.result * 100000) / 100000,
+    };
   }
 
   async updateCurrencies() {
@@ -78,7 +82,7 @@ export class InputComponent implements OnInit {
     }
   }
 
- async populateCurrencies() {
+  async populateCurrencies() {
     this.listCurrencies = await this.fetchingService.getCurrencyList();
     this.fromCurrencies = [defaultFromCurrency];
     this.toCurrencies = [defaultFromCurrency];
@@ -109,8 +113,8 @@ export class InputComponent implements OnInit {
 
   checkCookie() {
     const cookie = this.cookieService.get('trace_id');
-    if(!cookie) {
-      this.cookieService.set('trace_id', uuidv4())
+    if (!cookie) {
+      this.cookieService.set('trace_id', uuidv4());
     }
   }
 
@@ -120,8 +124,8 @@ export class InputComponent implements OnInit {
       cookieId: cookie,
       fromCurrency: this.selectedFromCurrency,
       toCurrency: this.selectedToCurrency,
-      amount: this.amount
-    }
+      amount: this.amount,
+    };
     await this.fetchingService.postLogs(this.body);
   }
 }

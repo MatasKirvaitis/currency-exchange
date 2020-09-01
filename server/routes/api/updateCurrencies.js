@@ -21,7 +21,6 @@ const getCurrencyListXML = `<?xml version="1.0" encoding="utf-8"?>
   </soap:Body>
 </soap:Envelope>`;
 
-
 const updateCurrencies = async (req, res) => {
   try {
     const currentDate = moment().format('YYYY-MM-DD');
@@ -54,16 +53,16 @@ const checkLastUpdated = async () => {
     console.error(error);
     throw new Error('Error while fetching data from db.renewed.find()');
   }
-}
+};
 
-const updateDate = async date => {
+const updateDate = async (date) => {
   try {
     await db.renewed.updateOne('dateUpdated', date);
     console.log('Date updated successfully');
-  } catch(error) {
+  } catch (error) {
     console.error(`Error updating date: ${date} `, error);
   }
-}
+};
 
 const updateExchangeRates = async () => {
   const fxRates = await getCurrentFxRates();
@@ -71,49 +70,63 @@ const updateExchangeRates = async () => {
   const documents = prepareDocuments(fxRates, currencyList);
   await db.rates.deleteAll();
   return await db.rates.create(documents);
-}
+};
 
 const getCurrentFxRates = async () => {
   try {
-    const result = await fetch(
-      LB_URL,
-      {
-        method: 'post',
-        body: getCurrentFxRatesXML,
-        headers: { 'Content-Type': 'text/xml' }
-      }
+    const result = await fetch(LB_URL, {
+      method: 'post',
+      body: getCurrentFxRatesXML,
+      headers: { 'Content-Type': 'text/xml' },
+    });
+    const extractedJSON = await extractJSON(result);
+    return R.path(
+      [
+        'soap:Envelope',
+        'soap:Body',
+        'getCurrentFxRatesResponse',
+        'getCurrentFxRatesResult',
+        'FxRates',
+        'FxRate',
+      ],
+      extractedJSON
     );
-      const extractedJSON = await extractJSON(result);
-      return R.path(['soap:Envelope', 'soap:Body', 'getCurrentFxRatesResponse', 'getCurrentFxRatesResult', 'FxRates', 'FxRate'], extractedJSON);
   } catch (error) {
     consle.error(error);
     throw new Error('Error while fetching currentFxRates');
   }
-}
+};
 
 const getCurrencyList = async () => {
   try {
-    const result = await fetch(
-      LB_URL,
-      {
-        method: 'post',
-        body: getCurrencyListXML,
-        headers: { 'Content-Type': 'text/xml' }
-      }
+    const result = await fetch(LB_URL, {
+      method: 'post',
+      body: getCurrencyListXML,
+      headers: { 'Content-Type': 'text/xml' },
+    });
+    const extractedJSON = await extractJSON(result);
+    return R.path(
+      [
+        'soap:Envelope',
+        'soap:Body',
+        'getCurrencyListResponse',
+        'getCurrencyListResult',
+        'FxRates',
+        'CcyNtry',
+      ],
+      extractedJSON
     );
-      const extractedJSON = await extractJSON(result);
-      return R.path(['soap:Envelope', 'soap:Body', 'getCurrencyListResponse', 'getCurrencyListResult', 'FxRates', 'CcyNtry'], extractedJSON);
   } catch (error) {
     consle.error(error);
     throw new Error('Error while fetching currentFxRates');
   }
-}
+};
 
-const extractJSON = async response => {
+const extractJSON = async (response) => {
   const text = await response.text();
   const jsonString = parser.toJson(text);
   return JSON.parse(jsonString);
-}
+};
 
 const prepareDocuments = (fxRates, currencyList) => {
   let finalDocumentArray = [];
@@ -123,13 +136,14 @@ const prepareDocuments = (fxRates, currencyList) => {
   }
   for (let rate of fxRatesArray) {
     let element = R.find(R.propEq('Ccy', rate.Ccy))(currencyList);
-    if (element) finalDocumentArray.push({
-      _id: rate.Ccy,
-      rate: rate.Amt,
-      name: element.CcyNm[1].$t,
-    })
+    if (element)
+      finalDocumentArray.push({
+        _id: rate.Ccy,
+        rate: rate.Amt,
+        name: element.CcyNm[1].$t,
+      });
   }
   return finalDocumentArray;
-}
+};
 
 module.exports = updateCurrencies;

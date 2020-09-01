@@ -10,9 +10,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import {LayoutModule} from '@angular/cdk/layout';
-import {MatGridListModule} from '@angular/material/grid-list';
-import {MatCardModule} from '@angular/material/card';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
 
 import { AppComponent } from './app.component';
 import { InputComponent } from './components/input/input.component';
@@ -37,7 +37,7 @@ import { CookieService } from 'ngx-cookie-service';
     HttpClientModule,
     LayoutModule,
     MatGridListModule,
-    MatCardModule
+    MatCardModule,
   ],
   providers: [FetchingService, CookieService],
   bootstrap: [AppComponent],

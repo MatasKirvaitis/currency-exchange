@@ -4,7 +4,6 @@ const ObjectId = require('mongodb').ObjectID;
 
 const postLogs = async (req, res) => {
     try {
-        const body = req.body;
         const timestamp = moment().toISOString();
         const id = ObjectId().toString();
         let document = {

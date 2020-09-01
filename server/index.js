@@ -12,7 +12,7 @@ const PORT = 3000;
 app.enable('strict routing');
 app.enable('trust proxy');
 
-require('./db').init()
+require('./db').init();
 
 const api = require('./routes/api');
 
