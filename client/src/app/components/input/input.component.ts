@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FetchingService } from '../../services/fetching.service';
-import { environment } from '../../../environments/environment';
 import * as R from 'ramda';
 import { v4 as uuidv4 } from 'uuid';
 import { CookieService } from 'ngx-cookie-service';
@@ -114,16 +113,23 @@ export class InputComponent implements OnInit {
   checkCookie() {
     const cookie = this.cookieService.get('trace_id');
     if (!cookie) {
-      this.cookieService.set('trace_id', uuidv4());
+      this.cookieService.set('trace_id', uuidv4(), 365);
     }
   }
 
   async createLog() {
     const cookie = this.cookieService.get('trace_id');
+    const fromCurrency = R.find(R.propEq('value', this.selectedFromCurrency))(
+      this.fromCurrencies
+    );
+    const toCurrency = R.find(R.propEq('value', this.selectedToCurrency))(
+      this.toCurrencies
+    );
+
     this.body = {
       cookieId: cookie,
-      fromCurrency: this.selectedFromCurrency,
-      toCurrency: this.selectedToCurrency,
+      fromCurrency: fromCurrency.symbol,
+      toCurrency: toCurrency.symbol,
       amount: this.amount,
     };
     await this.fetchingService.postLogs(this.body);
